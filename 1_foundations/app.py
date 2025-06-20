@@ -76,9 +76,10 @@ tools = [{"type": "function", "function": record_user_details_json},
 class Me:
 
     def __init__(self):
-        self.openai = OpenAI()
-        self.name = "Ed Donner"
-        reader = PdfReader("me/linkedin.pdf")
+        self.openai = OpenAI(base_url='http://localhost:11434/v1', api_key='ollama')
+        self.MODEL = "llama3.2"
+        self.name = "Rohan Soni"
+        reader = PdfReader("me/RohanSoniCV.pdf")
         self.linkedin = ""
         for page in reader.pages:
             text = page.extract_text()
@@ -116,7 +117,7 @@ If the user is engaging in discussion, try to steer them towards getting in touc
         messages = [{"role": "system", "content": self.system_prompt()}] + history + [{"role": "user", "content": message}]
         done = False
         while not done:
-            response = self.openai.chat.completions.create(model="gpt-4o-mini", messages=messages, tools=tools)
+            response = self.openai.chat.completions.create(model=self.MODEL, messages=messages, tools=tools)
             if response.choices[0].finish_reason=="tool_calls":
                 message = response.choices[0].message
                 tool_calls = message.tool_calls
